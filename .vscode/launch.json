@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Main Snake AI",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/snake-ai/src/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
