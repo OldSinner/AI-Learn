@@ -1,8 +1,6 @@
-# Game Development
 pygame==2.5.2  # for rendering the game
-# Machine Learning & Scientific Computing
 numpy==1.24.3  # for numerical computations and state representations
 torch==2.1.0  # for neural networks (PyTorch version)
-# Data Visualization
-matplotlib==3.7.2  
+matplotlib==3.7.2  # for plotting training progress and visualization
+ipython  # for IPython.display.clear_output in notebooks
     

@@ -1,13 +1,13 @@
 from collections import defaultdict
 import pickle
-import model
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import clear_output
+from ..models.types import Action
 
 
-def tuple_to_action(t) -> model.Action:
-    return list(model.Action)[t]
+def tuple_to_action(t) -> Action:
+    return list(Action)[t]
 
 
 def save_agent(agent, filename="q_table.pkl"):

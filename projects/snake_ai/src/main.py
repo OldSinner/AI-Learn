@@ -1,5 +1,5 @@
-from snakenotail import SnakeAI
-from basesnake import get_direction_from_keyboard
+from agents.snake_ai import SnakeAI
+from game.base_snake import get_direction_from_keyboard
 
 snake = SnakeAI()
 import pygame
@@ -10,7 +10,7 @@ try:
         _, _, done = snake.step(action)
         if done:
             print("ugabuga")
-            snake.game_reset()
+            snake.reset()
         if not snake.running:
             pygame.quit()
 finally:

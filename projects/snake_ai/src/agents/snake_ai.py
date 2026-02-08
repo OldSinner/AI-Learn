@@ -1,5 +1,6 @@
-from basesnake import CELL_GRID, BaseSnake
-from model import Vector
+from ..game.base_snake import BaseSnake, get_direction_from_keyboard
+from ..models.types import Vector
+from ..config.game_config import CELL_GRID
 
 
 class SnakeAI(BaseSnake):
