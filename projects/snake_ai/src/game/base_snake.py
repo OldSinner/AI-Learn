@@ -1,8 +1,8 @@
 from collections import deque
 import random
 import pygame
-from ..models.types import Vector, Action
-from ..config.game_config import (
+from models.types import Vector, Action
+from config.game_config import (
     SCREEN_WIDTH, SCREEN_HEIGHT, FPS, SNAKE, EMPTY, FOOD, 
     CELL_GRID, CELL_SIZE
 )

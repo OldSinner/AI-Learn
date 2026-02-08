@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import clear_output
-from ..models.types import Action
+from models.types import Action
 
 
 def tuple_to_action(t) -> Action:

@@ -1,12 +1,12 @@
-from ..game.base_snake import BaseSnake, get_direction_from_keyboard
-from ..models.types import Vector
-from ..config.game_config import CELL_GRID
+from game.base_snake import BaseSnake, get_direction_from_keyboard
+from models.types import Vector
+from config.game_config import CELL_GRID
 
 
 class SnakeAI(BaseSnake):
     def get_reward(self, old_distance: int) -> float:
         reward = -0.05
-        new_distance = self.get_distance()
+        new_distance = self.get_distance_to_food()
 
         if new_distance < old_distance:
             reward += 0.5
@@ -48,7 +48,7 @@ class SnakeAI(BaseSnake):
             food_right = self.snake[0].x < self.food.x
 
         # Add distance information for better learning
-        distance = self.get_distance()
+        distance = self.get_distance_to_food()
         distance_level = min(distance // 5, 3)  # 0-3 levels
 
         return (food_front, food_left, food_right, distance_level)

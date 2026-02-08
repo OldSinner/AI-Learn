@@ -1,4 +1,3 @@
-pygame==2.5.2  # for rendering the game
 numpy==1.24.3  # for numerical computations and state representations
 torch==2.1.0  # for neural networks (PyTorch version)
 matplotlib==3.7.2  # for plotting training progress and visualization

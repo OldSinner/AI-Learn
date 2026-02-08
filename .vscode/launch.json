@@ -5,7 +5,7 @@
             "name": "Python: Main Snake AI",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/snake-ai/src/main.py",
+            "program": "${workspaceFolder}/projects/snake_ai/src/main.py",
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}"
         }
