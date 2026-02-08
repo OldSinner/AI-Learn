@@ -64,7 +64,7 @@ class BaseSnake:
             if self.food not in self.snake:
                 break
 
-    def _get_distance_to_food(self) -> int:
+    def get_distance_to_food(self) -> int:
         """Calculate Manhattan distance from snake head to food.
 
         Returns:
@@ -89,7 +89,7 @@ class BaseSnake:
         Returns:
             Tuple of (state, reward, done).
         """
-        old_distance = self._get_distance_to_food()
+        old_distance = self.get_distance_to_food()
         self.handle_events()
         self.handle_action(action)
         self._move_snake()
