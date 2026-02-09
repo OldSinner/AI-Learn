@@ -65,7 +65,6 @@ class BaseSnake:
     def get_distance_to_food(self) -> int:
         """Calculate Manhattan distance from snake head to food."""
         head = self.snake[0]
-        body = list(self.snake)
         return abs(head.x - self.food.x) + abs(head.y - self.food.y)
 
     def _move_snake(self) -> None:
@@ -114,32 +113,32 @@ class BaseSnake:
         return len(self.snake) > 1 and head in list(self.snake)[1:]
 
     def get_state(self) -> tuple:
-        food_front = False
-        food_left = False
-        food_right = False
-
-        if self.direction == Vector(1, 0):  # Moving RIGHT
-            food_front = self.snake[0].x < self.food.x
-            food_left = self.snake[0].y > self.food.y
-            food_right = self.snake[0].y < self.food.y
-        elif self.direction == Vector(-1, 0):  # Moving LEFT
-            food_front = self.snake[0].x > self.food.x
-            food_left = self.snake[0].y < self.food.y
-            food_right = self.snake[0].y > self.food.y
-        elif self.direction == Vector(0, 1):  # Moving DOWN
-            food_front = self.snake[0].y < self.food.y
-            food_left = self.snake[0].x < self.food.x
-            food_right = self.snake[0].x > self.food.x
-        elif self.direction == Vector(0, -1):  # Moving UP
-            food_front = self.snake[0].y > self.food.y
-            food_left = self.snake[0].x > self.food.x
-            food_right = self.snake[0].x < self.food.x
-
-        # Add distance information for better learning
-        distance = self.get_distance_to_food()
-        distance_level = min(distance // 5, 3)  # 0-3 levels
-
+        food_front, food_left, food_right = self._get_food_direction_flags()
+        distance_level = self._get_distance_level()
         return (food_front, food_left, food_right, distance_level)
+
+    def _get_food_direction_flags(self) -> tuple[bool, bool, bool]:
+        """Return (food_front, food_left, food_right) relative to heading."""
+
+        head = self.snake[0]
+
+        if self.direction == Vector(1, 0):  # RIGHT
+            return (head.x < self.food.x, head.y > self.food.y, head.y < self.food.y)
+        if self.direction == Vector(-1, 0):  # LEFT
+            return (head.x > self.food.x, head.y < self.food.y, head.y > self.food.y)
+        if self.direction == Vector(0, 1):  # DOWN
+            return (head.y < self.food.y, head.x < self.food.x, head.x > self.food.x)
+        if self.direction == Vector(0, -1):  # UP
+            return (head.y > self.food.y, head.x > self.food.x, head.x < self.food.x)
+
+        # Should never happen, but keep state shape stable.
+        return (False, False, False)
+
+    def _get_distance_level(self, *, bucket: int = 5, max_level: int = 3) -> int:
+        """Bucketize Manhattan distance to food into a small integer level."""
+
+        distance = self.get_distance_to_food()
+        return min(distance // bucket, max_level)
 
     def get_relative_dangers(self) -> tuple[bool, bool, bool]:
         """Return dangers relative to the current heading.
@@ -148,6 +147,7 @@ class BaseSnake:
         """
 
         head = self.snake[0]
+        body = list(self.snake)
 
         dx, dy = self.direction.x, self.direction.y
         straight_dir = self.direction
@@ -157,7 +157,9 @@ class BaseSnake:
         def is_danger(next_pos: Vector) -> bool:
             if not self._is_within_bounds(next_pos):
                 return True
-            if next_pos in self.snake:
+
+            # Tail is excluded because it moves away on the step.
+            if next_pos in body[1:-1]:
                 return True
             return False
 
