@@ -3,8 +3,14 @@ import random
 import pygame
 from models.types import Vector, Action
 from config.game_config import (
-    SCREEN_WIDTH, SCREEN_HEIGHT, FPS, SNAKE, EMPTY, FOOD, 
-    CELL_GRID, CELL_SIZE
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT,
+    FPS,
+    SNAKE,
+    EMPTY,
+    FOOD,
+    CELL_GRID,
+    CELL_SIZE,
 )
 
 
@@ -15,6 +21,7 @@ class BaseSnake:
         """Initialize the game environment and reset game state."""
         self._init_pygame()
         self.reset()
+        self.n_actions = 3
 
     def _init_pygame(self):
         """Initialize Pygame display and clock."""
@@ -106,12 +113,53 @@ class BaseSnake:
         return len(self.snake) > 1 and head in list(self.snake)[1:]
 
     def get_state(self) -> tuple:
-        """Get current game state representation."""
-        return ()
+        food_front = False
+        food_left = False
+        food_right = False
+
+        if self.direction == Vector(1, 0):  # Moving RIGHT
+            food_front = self.snake[0].x < self.food.x
+            food_left = self.snake[0].y > self.food.y
+            food_right = self.snake[0].y < self.food.y
+        elif self.direction == Vector(-1, 0):  # Moving LEFT
+            food_front = self.snake[0].x > self.food.x
+            food_left = self.snake[0].y < self.food.y
+            food_right = self.snake[0].y > self.food.y
+        elif self.direction == Vector(0, 1):  # Moving DOWN
+            food_front = self.snake[0].y < self.food.y
+            food_left = self.snake[0].x < self.food.x
+            food_right = self.snake[0].x > self.food.x
+        elif self.direction == Vector(0, -1):  # Moving UP
+            food_front = self.snake[0].y > self.food.y
+            food_left = self.snake[0].x > self.food.x
+            food_right = self.snake[0].x < self.food.x
+
+        # Add distance information for better learning
+        distance = self.get_distance_to_food()
+        distance_level = min(distance // 5, 3)  # 0-3 levels
+
+        return (food_front, food_left, food_right, distance_level)
 
     def get_reward(self, old_distance: int) -> float:
-        """Calculate reward for current step."""
-        return 0
+        reward = -0.05
+        new_distance = self.get_distance_to_food()
+
+        if new_distance < old_distance:
+            reward += 0.5
+        elif new_distance > old_distance:
+            reward -= 0.25
+
+        if self.snake[0] == self.food:
+            return 10
+
+        if (
+            self.snake[0].x > CELL_GRID[0]
+            or self.snake[0].x < 0
+            or self.snake[0].y > CELL_GRID[1]
+            or self.snake[0].y < 0
+        ):
+            return -10
+        return reward
 
     def _render(self) -> None:
         """Render the game state to screen."""
