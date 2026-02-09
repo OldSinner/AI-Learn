@@ -65,6 +65,7 @@ class BaseSnake:
     def get_distance_to_food(self) -> int:
         """Calculate Manhattan distance from snake head to food."""
         head = self.snake[0]
+        body = list(self.snake)
         return abs(head.x - self.food.x) + abs(head.y - self.food.y)
 
     def _move_snake(self) -> None:
@@ -139,6 +140,32 @@ class BaseSnake:
         distance_level = min(distance // 5, 3)  # 0-3 levels
 
         return (food_front, food_left, food_right, distance_level)
+
+    def get_relative_dangers(self) -> tuple[bool, bool, bool]:
+        """Return dangers relative to the current heading.
+        Returns
+        - (danger_straight, danger_left, danger_right)
+        """
+
+        head = self.snake[0]
+
+        dx, dy = self.direction.x, self.direction.y
+        straight_dir = self.direction
+        left_dir = Vector(-dy, dx)
+        right_dir = Vector(dy, -dx)
+
+        def is_danger(next_pos: Vector) -> bool:
+            if not self._is_within_bounds(next_pos):
+                return True
+            if next_pos in self.snake:
+                return True
+            return False
+
+        danger_straight = is_danger(head + straight_dir)
+        danger_left = is_danger(head + left_dir)
+        danger_right = is_danger(head + right_dir)
+
+        return (danger_straight, danger_left, danger_right)
 
     def get_reward(self, old_distance: int) -> float:
         reward = -0.05
