@@ -1,5 +1,9 @@
 from dataclasses import dataclass
 import enum
+from typing import TypeAlias
+
+
+State: TypeAlias = tuple[object, ...]
 
 
 class Action(enum.Enum):
